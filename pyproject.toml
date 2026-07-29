@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nukez-mcp"
+version = "0.1.0"
+description = "Python client for the Nukez MCP server — connect, list tools, and call Nukez agent-native storage and verification tools over streamable HTTP JSON-RPC."
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "Nukez"}
+]
+keywords = [
+    "mcp",
+    "model-context-protocol",
+    "nukez",
+    "ai",
+    "agent",
+    "storage",
+    "solana",
+    "verification",
+    "client",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+]
+
+[project.urls]
+Homepage = "https://nukez.xyz"
+Documentation = "https://nukez.xyz/docs/mcp"
+
+[tool.setuptools.packages.find]
+where = ["src"]
