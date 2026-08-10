@@ -1,13 +1,12 @@
 """nukez-mcp — Python client for the Nukez MCP server."""
 
+from ._version import __version__
 from .client import (
     DEFAULT_ENDPOINT,
     PROTOCOL_VERSION,
     NukezMCP,
     NukezMCPError,
 )
-
-__version__ = "0.1.0"
 
 __all__ = [
     "NukezMCP",

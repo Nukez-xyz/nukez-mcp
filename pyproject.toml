@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nukez-mcp"
-version = "0.1.0"
+version = "0.1.1"
 description = "Python client for the Nukez MCP server — connect, list tools, and call Nukez agent-native storage and verification tools over streamable HTTP JSON-RPC."
 readme = "README.md"
 license = {text = "MIT"}

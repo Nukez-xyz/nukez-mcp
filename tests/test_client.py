@@ -99,3 +99,42 @@ def test_call_tool_is_error_raises():
     with make_client(handler) as mcp:
         with pytest.raises(NukezMCPError, match="boom"):
             mcp.call_tool("nukez_verify")
+
+
+def test_sse_skips_non_json_data_lines():
+    payload = {"jsonrpc": "2.0", "id": 1, "result": {"tools": []}}
+    sse = f"data: ping\n\ndata: 42\n\nevent: message\ndata: {json.dumps(payload)}\n\n"
+
+    def handler(request):
+        return httpx.Response(
+            200, text=sse, headers={"content-type": "text/event-stream"}
+        )
+
+    with make_client(handler) as mcp:
+        assert mcp.list_tools() == []
+
+
+def test_version_is_single_sourced():
+    import re
+    from pathlib import Path
+
+    import nukez_mcp
+
+    pyproject = Path(__file__).resolve().parents[1] / "pyproject.toml"
+    match = re.search(r'^version = "(.+)"$', pyproject.read_text(), re.MULTILINE)
+    assert match, "version field missing from pyproject.toml"
+    assert match.group(1) == nukez_mcp.__version__
+
+    sent = {}
+
+    def handler(request):
+        body = json.loads(request.content)
+        sent.update(body["params"]["clientInfo"])
+        return json_rpc_result(request, {
+            "protocolVersion": PROTOCOL_VERSION,
+            "serverInfo": {"name": "nukez", "version": "1.3.0"},
+        })
+
+    with make_client(handler) as mcp:
+        mcp.connect()
+    assert sent["version"] == nukez_mcp.__version__

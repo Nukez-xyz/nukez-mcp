@@ -5,3 +5,5 @@ __pycache__/
 .pytest_cache/
 WORKLOG.md
 DRIFT_REPORT.md
+FRONTEND_DOCS_PROMPT.md
+.DS_Store

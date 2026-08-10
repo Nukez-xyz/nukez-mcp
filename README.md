@@ -54,8 +54,10 @@ The production server registers 15 tools:
 | Memory | `nukez_remember`, `nukez_recall` |
 
 The canonical flow is `nukez_quote` → external chain transfer → `nukez_pay`
-→ `nukez_provision`, after which post-provisioning operations require
-client-signed envelopes.
+→ `nukez_provision`, after which mutating and payer-authorized operations —
+store, confirm, delete, remember, attest push, recompute-verify — require
+client-signed envelopes. Reads such as retrieve, recall, status, and
+structural verify need only the `receipt_id`.
 
 ## Signed envelopes and payments
 
@@ -79,11 +81,19 @@ files = mcp.call_tool("nukez_retrieve", {
 })
 ```
 
+Two exceptions to the one-envelope pattern: `nukez_remember` takes a
+**list of two** signed envelopes (one for the memory record file, one for
+the index), and `nukez_quote` / `nukez_pay` / `nukez_upload_chunk` take no
+envelope at all.
+
 ## Worked example: two-phase on-chain attestation
 
 Anchoring an attestation is a two-phase flow — the server is keyless, so the
-first call returns an envelope spec (note the `query` field, which the signed
-envelope JSON must carry verbatim), and the second call anchors on-chain:
+first call returns `action_required="sign_envelopes"` with an envelope spec
+(note the `query` field, which the signed envelope JSON must carry verbatim),
+and the second call anchors on-chain. The gateway also auto-reattests after
+every file mutation, so an explicit `push=True` is only needed when you want
+an immediate, inline on-chain anchor:
 
 ```python
 v1 = mcp.call_tool("nukez_verify", {"receipt_id": receipt_id, "push": True})
@@ -106,7 +116,7 @@ The canonical end-to-end usage example is the **Trust Verification demo** — a
 live, agent-driven walkthrough that connects to the production Nukez MCP
 server, provisions storage with a real BETA-token x402 payment, stores and
 encrypts artifacts through signed MCP operations, survives a tamper attempt,
-and verifies everything on Solana mainnet across 10 preset cues:
+and verifies everything on Solana mainnet across 10 preset cues, including:
 
 1. Agent surface online → **connect to the Nukez protocol via MCP**
 2. Grant local wallet access (a discrete consent moment — the server never

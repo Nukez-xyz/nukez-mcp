@@ -17,6 +17,8 @@ from typing import Any, Optional
 
 import httpx
 
+from ._version import __version__
+
 DEFAULT_ENDPOINT = "https://mcp.nukez.xyz/mcp"
 PROTOCOL_VERSION = "2025-03-26"
 
@@ -59,7 +61,7 @@ class NukezMCP:
         *,
         timeout: float = 120.0,
         client_name: str = "nukez-mcp",
-        client_version: str = "0.1.0",
+        client_version: str = __version__,
         transport: Optional[httpx.BaseTransport] = None,
     ):
         self.endpoint = endpoint
@@ -136,8 +138,11 @@ class NukezMCP:
         if "text/event-stream" in content_type:
             for line in resp.text.splitlines():
                 if line.startswith("data: "):
-                    data = json.loads(line[len("data: "):])
-                    if "result" in data or "error" in data:
+                    try:
+                        data = json.loads(line[len("data: "):])
+                    except json.JSONDecodeError:
+                        continue  # keepalive/ping frames are not JSON-RPC payloads
+                    if isinstance(data, dict) and ("result" in data or "error" in data):
                         return data
             return None
         try:
