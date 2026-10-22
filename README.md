@@ -17,6 +17,16 @@ for connecting to the server, listing its tools, and calling them.
 pip install nukez-mcp
 ```
 
+### Minimum installer versions
+
+Install (or `uvx` / `pipx run`) this package only with pip >= 26.2.2,
+uv/uvx >= 0.13.4, pipx >= 1.18.4, or npm/npx on Node >= 22.23.4 / 24.22.1 /
+26.12.1. Older installers bundle a CA store that still trusts the compromised
+eMudhra/emSign intermediate CAs (2026-10-22) and can be served a tampered
+package even after the operating system has revoked that chain; the client
+itself requires `certifi >= 2026.10.19` at runtime for its HTTPS calls to the
+MCP server.
+
 ## Quickstart
 
 ```python

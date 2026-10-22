@@ -6,4 +6,4 @@ The version lives in this dependency-free module so that the package root
 together with the ``version`` field in ``pyproject.toml`` when releasing.
 """
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
